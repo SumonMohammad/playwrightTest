@@ -16,12 +16,20 @@ jobs:
           name: Install Dependencies
           command: npm install
 
-      # Install Playwright browsers (if necessary)
+      # Install system dependencies for Playwright (in case needed)
       - run:
-          name: Install Playwright Browsers
-          command: npx playwright install
+          name: Install Required Dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libnss3 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0
 
-      # Run Playwright tests in headless mode (you can use --headed if you need to see the browser)
+      # Fix permissions for Playwright binaries
+      - run:
+          name: Fix Permissions for Playwright
+          command: |
+            chmod -R 777 node_modules/.cache
+
+      # Run Playwright tests in headless mode
       - run:
           name: Run Playwright Tests
           command: npx playwright test --headless
