@@ -1,0 +1,32 @@
+version: 2.1
+
+executors:
+  windows_executor:
+    machine:
+      image: windows-server-2019
+
+jobs:
+  test:
+    executor: windows_executor
+    steps:
+      - checkout
+      - run:
+          name: Install Node.js
+          command: |
+            choco install nodejs-lts -y
+            refreshenv
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Install Playwright Browsers
+          command: npx playwright install
+      - run:
+          name: Run Playwright Tests
+          command: npx playwright test --headed
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test
